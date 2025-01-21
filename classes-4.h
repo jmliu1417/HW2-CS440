@@ -80,22 +80,42 @@ public:
     // Reads data from a CSV file and writes it to a binary data file as Employee objects
     void createFromFile(const string& csvFilename) {
         ifstream csvFile(csvFilename);  // Open the Employee.csv file for reading
+
+        // Colby: added this to make sure file opens
+        if (!csvFile.is_open()) {
+            cout << "Could not open file: " << csvFilename << endl;
+            return;
+        }
         
         string line, name, bio;
         int id, manager_id;
 
         // Read each line from the CSV file, parse it, and create Employee objects
         while (getline(csvFile, line)) {
-            
+
             /***TO_DO***/ 
             // Parse id, name, bio and manager-id from line, to create the Employee object below 
 
+            stringstream ss(line);  // For parsing the line
+            vector<string> row;     // For storing all values in the row, individually
+            string value;           // For holding current value in row
             
+            // Add each value in the row to the vector, each separated by a comma
+            while (getline(ss, value, ',')) {
+                row.push_back(value);
+            }
 
+            // Assign each value, convert non-strings to their data types
+            id = stoi(row[0]); 
+            name = row[1];
+            bio = row[2];
+            manager_id = stoi(row[3]);
+            
             Employee emp(id, name, bio, manager_id);  //create Employee objects
 
             emp.write_into_data_file(data_file); // Write the Employee object, i.e., the row you read to the .dat data_file
         }
+
         csvFile.close();  // Close the CSV file
     }
 
