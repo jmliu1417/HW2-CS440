@@ -35,11 +35,17 @@ int main(int argc, char* argv[]) {
         cin >> user_input;
         
         if(user_input == 1){
-            //TO_DO
+            int user_id;
+
+            cout <<"\nEnter employee ID: ";
+            cin >> user_id;
+
+            manager.findAndPrintEmployee(input_id);
+            cout << endl;
         }
     }    
 
     cout << "Exiting program." <<endl;
-    
+
     return 0;
 }
