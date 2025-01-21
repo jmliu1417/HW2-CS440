@@ -21,24 +21,26 @@ int main(int argc, char* argv[]) {
 
     // Assuming the Employee.CSV file is in the same directory, 
     // we want to read from the Employee.csv and write into the new data_file
-    manager.createFromFile("Employee.csv");
+
+    // Colby: changed this, was originally "Employee.csv", which isn't the file we have
+    manager.createFromFile("Employee-2.csv");
 
     // Searching for Employee IDs Using [manager.findAndPrintEmployee(id)]
     /***TO_DO***/ 
 
-    int user_input, input_id;
+    int user_input;
 
     while(user_input != 2){
         cout << "Menu" << endl;
-        cout <<"1) Search employee via. ID \n 2) Exit program (enter '2') " <<endl;
+        cout << "1) Search employee via. ID \n2) Exit program (enter '2') " << endl;
 
         cin >> user_input;
         
         if(user_input == 1){
-            int user_id;
+            int input_id;
 
-            cout <<"\nEnter employee ID: ";
-            cin >> user_id;
+            cout << "\nEnter employee ID: ";
+            cin >> input_id;
 
             manager.findAndPrintEmployee(input_id);
             cout << endl;
