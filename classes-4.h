@@ -110,7 +110,16 @@ public:
         // Use [emp.read_from_data_file(data_file)] to read lines from the datafile 
         // until you find the id you are looking for or reach the end-of-file (eof) 
 
-       
+       while(!data_file.eof()){
+            emp.read_from_data_file(data_file);
+
+            if(emp.id == searchId){
+                emp.print();
+                return;
+            }
+       }
         // Print not found message if no match
+
+        cout << "Employee: " << searchId << " not found" << endl;
     }
 };
