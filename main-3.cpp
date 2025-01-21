@@ -12,7 +12,7 @@ Skeleton code for storage management
 #include <sstream>
 #include <stdexcept>
 #include <cmath>
-#include "classes.h"
+#include "classes-4.h"
 using namespace std;
 
 int main(int argc, char* argv[]) {
@@ -26,5 +26,20 @@ int main(int argc, char* argv[]) {
     // Searching for Employee IDs Using [manager.findAndPrintEmployee(id)]
     /***TO_DO***/ 
 
+    int user_input, input_id;
+
+    while(user_input != 2){
+        cout << "Menu" << endl;
+        cout <<"1) Search employee via. ID \n 2) Exit program (enter '2') " <<endl;
+
+        cin >> user_input;
+        
+        if(user_input == 1){
+            //TO_DO
+        }
+    }    
+
+    cout << "Exiting program." <<endl;
+    
     return 0;
 }

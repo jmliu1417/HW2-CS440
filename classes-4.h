@@ -31,6 +31,10 @@ public:
         out.write(name, sizeof(name));  // Write the fixed length name
         /***TO_DO***/ // do the same thing for bio and manager-id
 
+        out.write(bio, sizeof(bio)); //bio
+        out.write(reinterpret_cast<const char*>(&manager_id), sizeof(manager_id)); //manager id
+
+
     }
 
     // Read data from a binary input stream, i.e., EmployeeRelation.dat file to populate an Employee object
@@ -38,6 +42,10 @@ public:
         in.read(reinterpret_cast<char*>(&id), sizeof(id));  // Read the integer ID
         in.read(name, sizeof(name));  // Read the fixed length name
         /***TO_DO***/ // do the same thing for bio and manager-id
+
+        in.read(bio, sizeof(bio));
+        in.read(reinterpret_cast<char*>(&manager_id), sizeof(manager_id));  // Read the manager ID
+
 
     }
 
