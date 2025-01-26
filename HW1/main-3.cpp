@@ -1,6 +1,17 @@
 /*
 Skeleton code for storage management
+
+Jamie Liu 
+934463192 
+liujam@oregonstate.edu
+
+Colby Noah
+934319645
+noahc@oregonstate.edu
+
 */
+
+
 
 #include <string>
 #include <ios>
