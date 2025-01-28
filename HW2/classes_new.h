@@ -6,6 +6,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <fstream>
 #include <sstream>
 #include <bitset>
 using namespace std; // Include the standard namespace
@@ -39,13 +40,23 @@ public:
     string serialize() const {
         ostringstream oss;
         oss.write(reinterpret_cast<const char*>(&id), sizeof(id)); // Writes the binary representation of the ID.
+        oss.put('|'); //character delimiter
+
         oss.write(reinterpret_cast<const char*>(&manager_id), sizeof(manager_id)); // Writes the binary representation of the Manager id
+        oss.put('|');
+
         int name_len = name.size();
         int bio_len = bio.size();
         oss.write(reinterpret_cast<const char*>(&name_len), sizeof(name_len)); // // Writes the size of the Name in binary format.
         oss.write(name.c_str(), name.size()); // writes the name in binary form
+        oss.put('|');
+
         oss.write(reinterpret_cast<const char*>(&bio_len), sizeof(bio_len)); // // Writes the size of the Bio in binary format. 
         oss.write(bio.c_str(), bio.size()); // writes bio in binary form
+        oss.put('|');
+
+        return oss.str();
+    
     }
 };
 
@@ -66,7 +77,11 @@ public:
             records.push_back(r); // Record stored in current page
             cur_size += r.get_size(); // Updating page size
 
+
             // TO_DO: update slot directory information
+            int offset = cur_size;
+            slot_directory.push_back({offset, r.get_size()});
+            cur_size += r.get_size();
 
             return true;
         }
@@ -90,10 +105,22 @@ public:
         }
 
         // TO_DO: Put a delimiter here to indicate slot directory starts from here 
+        string delimiter = "$Slot_start$";
+        memcpy(page_data + offset, delimiter.c_str(), delimiter.size());
+        offset += delimiter.size();
 
         for (const auto& slots : slot_directory) { // TO_DO: Write the slot-directory information into page_data. You'll use slot-directory to retrieve record(s).
+            if((sizeof(slots.first) + sizeof(slots.second) + offset) > sizeof(page_data)){
+                
+                cout << "File size is too large" << endl;
+                return;
 
+            }else{
+                memcpy(page_data + offset, &slots.first, sizeof(slots.first));
+                memcpy(page_data + offset, &slots.first, sizeof(slots.second));
 
+                offset += (sizeof(slots.first) + sizeof(slots.second));
+            }
         }
         
         out.write(page_data, sizeof(page_data)); // Write the page_data to the EmployeeRelation.dat file 
@@ -195,7 +222,7 @@ public:
         // TO_DO: Read pages from your data file (using read_from_data_file) and search for the employee ID in those pages. Be mindful of the page limit in main memory.        
         int page_number = 0;
         while(buffer[page_number].read_from_data_file(data_file)){
-        
+            
         }
         // TO_DO: Print "Record not found" if no records match.
 
