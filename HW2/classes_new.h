@@ -137,6 +137,18 @@ public:
         if (bytes_read == 4096) {
             
             // TO_DO: You may process page_data (4 KB page) and put the information to the records and slot_directory (main memory).
+            if(bytes_read == 4096){
+                string data(page_data, bytes_read); //buffer to string processing
+
+                //check for delimiter
+                size_t delimiter_found = data.find("$Slot_start$");
+
+                if(delimiter_found == string::npos){
+                   cout << "Delimiter not found" << endl;
+                   return false; 
+                }
+            }
+
             // TO_DO: You may modify this function to process the search for employee ID in the page you just loaded to main memory.
 
             return true;
@@ -182,6 +194,7 @@ public:
         string line, name, bio;
         int id, manager_id;
         int page_number = 0; // Current page we are working on [at most 3 pages]
+        
 
         while (getline(csvFile, line)) {   // Read each line from the CSV file, parse it, and create Employee objects
             stringstream ss(line);
@@ -205,6 +218,8 @@ public:
                         p.write_into_data_file(data_file);
                     }
                     page_number = 0; // Starting again from page 0
+                    buffer.clear();
+                    buffer.resize(3);
 
                 }
                 buffer[page_number].insert_record_into_page(r); // Reattempting the insertion of record 'r' into the newly created page
@@ -221,10 +236,22 @@ public:
 
         // TO_DO: Read pages from your data file (using read_from_data_file) and search for the employee ID in those pages. Be mindful of the page limit in main memory.        
         int page_number = 0;
-        while(buffer[page_number].read_from_data_file(data_file)){
-            
+        bool found = false;
+
+        while(!data_file.eof()){
+            if(!buffer[page_number].read_from_data_file(data_file)){
+                break;
+            }
+            page_number++;
         }
+
+
+      
         // TO_DO: Print "Record not found" if no records match.
+        if(found == false){
+            cout << "Record not found" << endl; 
+        }
 
     }
+    
 };
