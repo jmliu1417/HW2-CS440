@@ -147,6 +147,26 @@ public:
                    cout << "Delimiter not found" << endl;
                    return false; 
                 }
+
+                string record_data = data.substr(0, delimiter_found); //record data
+                size_t offset = 0;
+
+                while(offset < record_data.size()){
+                    //have to deserialize records
+                    vector<string> fields;
+                    stringstream ss(record_data);
+                    string field;
+
+                    while(getline(ss, field, '|')){
+                        fields.push_back(field);
+                    }
+
+
+
+                    
+                }
+
+
             }
 
             // TO_DO: You may modify this function to process the search for employee ID in the page you just loaded to main memory.
@@ -222,7 +242,14 @@ public:
                     buffer.resize(3);
 
                 }
-                buffer[page_number].insert_record_into_page(r); // Reattempting the insertion of record 'r' into the newly created page
+
+                // Reattempting the insertion of record 'r' into the newly created page
+                buffer[page_number].insert_record_into_page(r);
+
+                //rewriting page buffer into data file
+                buffer[page_number].write_into_data_file(data_file);
+
+                 
             }
             
         }
@@ -242,10 +269,18 @@ public:
             if(!buffer[page_number].read_from_data_file(data_file)){
                 break;
             }
-            page_number++;
+
+            for(int i = page_number; i < 3; i++){
+                for (auto& record : buffer[i].records) { // Search for the record in the page
+                    if (record.id == searchId) {
+                        record.print(); // Print the record if found
+                        found = true;
+                    }
+                }
+            }
+
+            page_number = (page_number + 1) % 3; // Rotate pages in the buffer for every iteration
         }
-
-
       
         // TO_DO: Print "Record not found" if no records match.
         if(found == false){

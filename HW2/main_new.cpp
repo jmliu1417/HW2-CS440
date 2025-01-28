@@ -27,5 +27,22 @@ int main(int argc, char* const argv[]) {
 
     // TODO: You'll receive employee IDs as arguments, process them to retrieve the record, or display a message if not found. 
 
+    for (int i = 1; i < argc; ++i) {
+        if(argc > 4){
+            cout << " Only the first 3 Employee IDs will be processed." << endl;
+            break;
+        }else{
+            try {
+                int searchId = stoi(argv[i]); // Convert argument to integer
+                cout << "Searching for Employee ID: " << searchId << endl;
+                manager.findAndPrintEmployee(searchId); // Search and print the record
+            } catch (const invalid_argument& e) {
+                cerr << "Invalid Employee ID: " << argv[i] << ". Please provide a numeric ID." << endl;
+            } catch (const out_of_range& e) {
+                cerr << "Employee ID out of range: " << argv[i] << endl;
+            }
+        }
+    }
+
     return 0;
 }
