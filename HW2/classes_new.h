@@ -40,20 +40,20 @@ public:
     string serialize() const {
         ostringstream oss;
         oss.write(reinterpret_cast<const char*>(&id), sizeof(id)); // Writes the binary representation of the ID.
-        oss.put('|'); //character delimiter
+       // oss.put('|'); //character delimiter
 
         oss.write(reinterpret_cast<const char*>(&manager_id), sizeof(manager_id)); // Writes the binary representation of the Manager id
-        oss.put('|');
+       // oss.put('|');
 
         int name_len = name.size();
         int bio_len = bio.size();
         oss.write(reinterpret_cast<const char*>(&name_len), sizeof(name_len)); // // Writes the size of the Name in binary format.
         oss.write(name.c_str(), name.size()); // writes the name in binary form
-        oss.put('|');
+       // oss.put('|');
 
         oss.write(reinterpret_cast<const char*>(&bio_len), sizeof(bio_len)); // // Writes the size of the Bio in binary format. 
         oss.write(bio.c_str(), bio.size()); // writes bio in binary form
-        oss.put('|');
+      //  oss.put('|');
 
         return oss.str();
     
@@ -69,6 +69,8 @@ public:
 
     bool insert_record_into_page(Record r){  // Write a Record into your page (main memory)
         
+        string serialized = r.serialize();
+
         if(cur_size + r.get_size() >= 4096){  // Checking if the current Record can be entered or not   
 
             return false; // You cannot insert the current record into this page
