@@ -148,16 +148,26 @@ public:
             }
 
             string record_data = data.substr(0, delimiter_found); //record data
-            size_t offset = 0;
-
             stringstream ss(record_data);
             string field;
             vector<string> fields;
 
             while(getline(ss, field, '|')){
+                //cout << field << endl << endl;
                 fields.push_back(field);
             }
 
+            return false;
+
+            try {
+                Record r(fields);
+            
+                this->records.push_back(r);
+            }
+            catch (const exception& e) {
+                cerr << "Error parsing in read_from_data_file(): " << e.what() << endl;
+                return false;
+            }
 
             // TO_DO: You may modify this function to process the search for employee ID in the page you just loaded to main memory.
             return true;
@@ -260,7 +270,7 @@ public:
             cout << "Page " << page_number << endl << endl;
             for (auto& record : buffer[page_number].records) { // Search for the record in the page
                 
-                record.print();
+                //record.print();
 
                 if (record.id == searchId) {
                     record.print(); // Print the record if found
