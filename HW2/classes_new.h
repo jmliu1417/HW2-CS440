@@ -169,8 +169,6 @@ public:
                 fields.push_back(field);
             }
 
-            return false;
-
             try
             {
                 Record r(fields);
@@ -300,8 +298,8 @@ public:
         while (buffer[page_number].read_from_data_file(data_file))
         {
 
-            cout << "Page " << page_number << endl
-                 << endl;
+            // cout << "Page " << page_number << endl << endl;
+
             for (auto &record : buffer[page_number].records)
             { // Search for the record in the page
 
