@@ -135,42 +135,31 @@ public:
 
         streamsize bytes_read = in.gcount(); // used to check if 4KB was actually read from the data file
         if (bytes_read == 4096) {
-            
+
             // TO_DO: You may process page_data (4 KB page) and put the information to the records and slot_directory (main memory).
-            if(bytes_read == 4096){
-                string data(page_data, bytes_read); //buffer to string processing
+            string data(page_data, bytes_read); //buffer to string processing
 
-                //check for delimiter
-                size_t delimiter_found = data.find("$Slot_start$");
+            //check for delimiter
+            size_t delimiter_found = data.find("$Slot_start$");
 
-                if(delimiter_found == string::npos){
-                   cout << "Delimiter not found" << endl;
-                   return false; 
-                }
-
-                string record_data = data.substr(0, delimiter_found); //record data
-                size_t offset = 0;
-
-                while(offset < record_data.size()){
-                    //have to deserialize records
-                    vector<string> fields;
-                    stringstream ss(record_data);
-                    string field;
-
-                    while(getline(ss, field, '|')){
-                        fields.push_back(field);
-                    }
-
-
-
-                    
-                }
-
-
+            if(delimiter_found == string::npos){
+                cout << "Delimiter not found" << endl;
+                return false; 
             }
 
-            // TO_DO: You may modify this function to process the search for employee ID in the page you just loaded to main memory.
+            string record_data = data.substr(0, delimiter_found); //record data
+            size_t offset = 0;
 
+            stringstream ss(record_data);
+            string field;
+            vector<string> fields;
+
+            while(getline(ss, field, '|')){
+                fields.push_back(field);
+            }
+
+
+            // TO_DO: You may modify this function to process the search for employee ID in the page you just loaded to main memory.
             return true;
         }
 
@@ -265,23 +254,35 @@ public:
         int page_number = 0;
         bool found = false;
 
-        while(!data_file.eof()){
-            if(!buffer[page_number].read_from_data_file(data_file)){
+
+        while (buffer[page_number].read_from_data_file(data_file)) {
+    
+            cout << "Page " << page_number << endl << endl;
+            for (auto& record : buffer[page_number].records) { // Search for the record in the page
+                
+                record.print();
+
+                if (record.id == searchId) {
+                    record.print(); // Print the record if found
+                    found = true;
+                    break;  // Stop searching
+                }
+            }
+           
+            // Done searching
+            if (found) {
                 break;
             }
 
-            for(int i = page_number; i < 3; i++){
-                for (auto& record : buffer[i].records) { // Search for the record in the page
-                    if (record.id == searchId) {
-                        record.print(); // Print the record if found
-                        found = true;
-                    }
-                }
-            }
+            //page_number = (page_number + 1) % buffer.size(); // Rotate pages in the buffer for every iteration
+            // Incrementing then checking seems to prevent looping over the same pages multiple times
+            page_number++;
 
-            page_number = (page_number + 1) % 3; // Rotate pages in the buffer for every iteration
+            if (page_number >= buffer.size()) {
+                break;
+            }
         }
-      
+
         // TO_DO: Print "Record not found" if no records match.
         if(found == false){
             cout << "Record not found" << endl; 
